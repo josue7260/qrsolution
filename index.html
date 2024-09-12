@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Código QR</title>
+    <!-- Incluir la biblioteca qrcode.js -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #qrcode {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generador de Código QR</h1>
+    <!-- Formulario para ingresar la URL -->
+    <form id="qrForm">
+        <label for="urlInput">Ingrese la URL:</label>
+        <input type="text" id="urlInput" required>
+        <button type="button" id="generateButton">Generar QR</button>
+    </form>
+
+    <!-- Contenedor para mostrar el código QR -->
+    <div id="qrcode"></div>
+
+    <script>
+        // Obtener referencia al botón de generación de QR y al contenedor del código QR
+        const generateButton = document.getElementById('generateButton');
+        const qrContainer = document.getElementById('qrcode');
+
+        // Evento para manejar el clic en el botón de generación de QR
+        generateButton.addEventListener('click', function() {
+            // Obtener el valor del campo de entrada de URL
+            const url = document.getElementById('urlInput').value.trim();
+
+            // Verificar que la URL no esté vacía y tenga un formato básico
+            if (url === '') {
+                alert('Por favor, ingrese una URL.');
+                return;
+            }
+
+            // Validar que la URL tenga un formato adecuado
+            try {
+                new URL(url); // Intentar crear una nueva URL para validar el formato
+            } catch (_) {
+                alert('La URL ingresada no es válida.');
+                return;
+            }
+
+            // Limpiar cualquier código QR anterior
+            qrContainer.innerHTML = '';
+
+            // Generar el código QR usando la biblioteca qrcode.js
+            QRCode.toCanvas(qrContainer, url, function (error) {
+                if (error) {
+                    console.error('Error generando QR:', error);
+                    alert('Ocurrió un error al generar el código QR.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
