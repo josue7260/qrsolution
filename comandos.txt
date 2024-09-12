@@ -1,0 +1,12 @@
+josueprueba7260@gmail.com
+Saladillo7260
+
+Git
+josue7260
+josueprueba7260@gmail.com
+Roque7260 
+
+
+subir archivos
+
+git add . && git commit -m "subo archivos" && git push
