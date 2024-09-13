@@ -1,48 +1,158 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Código QR</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <title>Generador de QR con IA</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
             text-align: center;
-            margin-top: 50px;
         }
-        #qrCode {
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+        }
+        h1 {
+            margin: 0;
+        }
+        section {
+            margin: 20px 0;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        .input-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        #qr-code {
             margin-top: 20px;
+        }
+        #qr-code img {
+            max-width: 300px;
         }
     </style>
 </head>
 <body>
-    <h1>Generador de Código QR</h1>
-    <input type="text" id="textInput" placeholder="Ingresa el texto aquí" />
-    <button onclick="generateQRCode()">Generar QR</button>
-    <div id="qrCode"></div>
 
-    <script>
-        function generateQRCode() {
-            const textInput = document.getElementById('textInput').value;
-            if (!textInput) {
-                alert('Por favor, ingresa un texto.');
-                return;
-            }
+<header>
+    <h1>Generador de QR con IA</h1>
+</header>
 
-            // Limpia el contenedor del código QR anterior
-            const qrCodeDiv = document.getElementById('qrCode');
-            qrCodeDiv.innerHTML = '';
+<section>
+    <div class="input-group">
+        <input type="text" id="filename" placeholder="Nombre del archivo">
+        <input type="text" id="url" placeholder="Enlace">
+    </div>
 
-            // Genera el código QR
-            const qr = qrcode(0, 'L');
-            qr.addData(textInput);
-            qr.make();
-            const qrImage = qr.createImgTag(4); // Puedes ajustar el tamaño aquí
+    <div class="input-group">
+        <button onclick="generateQR()">Generar QR</button>
+        <button onclick="downloadQR()">Descargar QR</button>
+        <button onclick="printSmallQR()">Imprimir QR Pequeño</button>
+        <button onclick="printLargeQR()">Imprimir QR Grande</button>
+        <button onclick="generateIntelligentQR()">IA</button>
+        <button onclick="resetFields()">Reiniciar</button>
+    </div>
 
-            // Muestra el código QR en el contenedor
-            qrCodeDiv.innerHTML = qrImage;
+    <div id="qr-code"></div>
+    <h2>Calidad del QR: <span id="calidad"></span></h2>
+</section>
+
+<footer>
+    <p>&copy; 2024 Generador de QR</p>
+</footer>
+
+<script>
+    function generateQR() {
+        const url = document.getElementById('url').value;
+        const qrCodeDiv = document.getElementById('qr-code');
+        qrCodeDiv.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}" alt="QR code">`;
+    }
+
+    function downloadQR() {
+        const filename = document.getElementById('filename').value || 'qr_code';
+        const qrImg = document.querySelector('#qr-code img');
+        if (qrImg) {
+            const url = qrImg.src;
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename + '.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            alert('Primero genera un código QR');
         }
-    </script>
+    }
+
+    function printSmallQR() {
+        printQR(300);
+    }
+
+    function printLargeQR() {
+        printQR(600);
+    }
+
+    function printQR(size) {
+        const url = document.getElementById('url').value;
+        if (!url) {
+            alert('Primero genera un código QR');
+            return;
+        }
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}`;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write('<html><head><title>Imprimir QR</title></head><body>');
+        printWindow.document.write(`<img src="${qrCodeUrl}" alt="QR code" style="width:${size}px;height:${size}px;">`);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    // Función para generar un QR de tamaño y calidad óptimos según el dispositivo (IA)
+    function generateIntelligentQR() {
+        const url = document.getElementById('url').value;
+        const isMobile = /Mobi/.test(navigator.userAgent); // Detecta si es móvil o escritorio
+
+        let size;
+        let quality;
+
+        if (isMobile) {
+            size = 150; // Tamaño pequeño para escaneo móvil
+            quality = 'Media'; // Calidad media
+        } else {
+            size = 300; // Tamaño grande para escaneo en pantallas de escritorio
+            quality = 'Alta'; // Alta calidad para dispositivos de escritorio
+        }
+
+        // Genera el código QR con el tamaño y la calidad establecidos
+        const qrCodeDiv = document.getElementById('qr-code');
+        qrCodeDiv.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}" alt="QR code">`;
+
+        // Muestra la calidad del QR generado
+        document.getElementById('calidad').innerText = quality;
+    }
+
+    function resetFields() {
+        document.getElementById('filename').value = '';
+        document.getElementById('url').value = '';
+        document.getElementById('qr-code').innerHTML = '';
+        document.getElementById('calidad').innerText = '';
+    }
+</script>
+
 </body>
 </html>
