@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión Administrador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Iniciar Sesión</h1>
+        <form id="loginForm">
+            <label for="password">Contraseña de Administrador:</label>
+            <input type="password" id="password" required>
+            <button type="submit">Acceder</button>
+        </form>
+        <div id="errorMessage"></div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const passwordInput = document.getElementById('password').value;
+            const correctPassword = "admin123"; // Contraseña de administrador
+
+            if (passwordInput === correctPassword) {
+                window.location.href = "admin.html";
+            } else {
+                document.getElementById('errorMessage').textContent = "Contraseña incorrecta. Inténtalo de nuevo.";
+            }
+        });
+    </script>
+</body>
+</html>
