@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Panel de Administración</h1>
+
+        <h2>Participantes Registrados</h2>
+        <ul id="participantList"></ul>
+
+        <button id="selectWinner">Seleccionar Ganador</button>
+        <div id="winnerMessage"></div>
+    </div>
+
+    <script>
+        // Cargar participantes registrados desde localStorage
+        const participantList = document.getElementById('participantList');
+        for (let i = 0; i < localStorage.length; i++) {
+            const dni = localStorage.key(i);
+            const phone = localStorage.getItem(dni);
+            const listItem = document.createElement('li');
+            listItem.textContent = `Teléfono: ${phone}, DNI: ${dni}`;
+            participantList.appendChild(listItem);
+        }
+
+        // Seleccionar un ganador aleatorio
+        document.getElementById('selectWinner').addEventListener('click', function() {
+            const totalParticipants = localStorage.length;
+            if (totalParticipants === 0) {
+                document.getElementById('winnerMessage').textContent = "No hay participantes registrados.";
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * totalParticipants);
+            const winnerDni = localStorage.key(randomIndex);
+            const winnerPhone = localStorage.getItem(winnerDni);
+            document.getElementById('winnerMessage').textContent = `Ganador: Teléfono ${winnerPhone}, DNI: ${winnerDni}`;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteo con Validación Inteligente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        input {
+            margin-bottom: 10px;
+        }
+        .participantes {
+            margin-top: 20px;
+        }
+        #qr-code {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sorteo con Validación Inteligente y Código QR</h1>
+    
+    <h2>Formulario de Participación</h2>
+    <form id="dniForm">
+        <label for="dni">Últimos 3 números del DNI:</label>
+        <input type="text" id="dni" maxlength="3" required><br><br>
+
+        <label for="celular">Número de celular:</label>
+        <input type="text" id="celular" maxlength="15" required><br><br>
+
+        <button type="button" onclick="agregarParticipante()">Agregar Participante</button>
+        <button type="button" onclick="guardarParticipantes()">Guardar Participantes</button>
+        <button type="button" onclick="reiniciarParticipantes()">Reiniciar</button>
+    </form>
+
+    <div class="participantes">
+        <h2>Lista de Participantes</h2>
+        <ul id="listaParticipantes"></ul>
+    </div>
+
+    <button onclick="elegirGanador()">Elegir Ganador</button>
+    <h2 id="resultado"></h2>
+
+    <div id="qr-code">
+        <h2>Código QR del Sorteo</h2>
+        <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?data

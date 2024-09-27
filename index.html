@@ -3,50 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteo con Validación Inteligente</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        label {
-            margin-right: 10px;
-        }
-        input {
-            margin-bottom: 10px;
-        }
-        .participantes {
-            margin-top: 20px;
-        }
-        #qr-code {
-            margin-top: 20px;
-        }
-    </style>
+    <title>Registro de Participantes</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Sorteo con Validación Inteligente y Código QR</h1>
-    
-    <h2>Formulario de Participación</h2>
-    <form id="dniForm">
-        <label for="dni">Últimos 3 números del DNI:</label>
-        <input type="text" id="dni" maxlength="3" required><br><br>
+    <div class="container">
+        <h1>Participa en el Sorteo</h1>
+        <form id="participantForm">
+            <label for="phone">Número de Teléfono:</label>
+            <input type="tel" id="phone" name="phone" required>
 
-        <label for="celular">Número de celular:</label>
-        <input type="text" id="celular" maxlength="15" required><br><br>
+            <label for="dni_last_digits">Últimos 3 dígitos del DNI:</label>
+            <input type="text" id="dni_last_digits" name="dni_last_digits" maxlength="3" required>
 
-        <button type="button" onclick="agregarParticipante()">Agregar Participante</button>
-        <button type="button" onclick="guardarParticipantes()">Guardar Participantes</button>
-        <button type="button" onclick="reiniciarParticipantes()">Reiniciar</button>
-    </form>
-
-    <div class="participantes">
-        <h2>Lista de Participantes</h2>
-        <ul id="listaParticipantes"></ul>
+            <button type="submit">Registrarse</button>
+        </form>
+        <div id="message"></div>
     </div>
 
-    <button onclick="elegirGanador()">Elegir Ganador</button>
-    <h2 id="resultado"></h2>
+    <script>
+        document.getElementById('participantForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const dni_last_digits = document.getElementById('dni_last_digits').value;
 
-    <div id="qr-code">
-        <h2>Código QR del Sorteo</h2>
-        <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?data
+            // Validar que no haya duplicados
+            if (localStorage.getItem(dni_last_digits)) {
+                document.getElementById('message').textContent = "Los últimos 3 dígitos del DNI ya están registrados.";
+            } else {
+                localStorage.setItem(dni_last_digits, phone);
+                document.getElementById('message').textContent = "¡Registro exitoso!";
+            }
+        });
+    </script>
+</body>
+</html>

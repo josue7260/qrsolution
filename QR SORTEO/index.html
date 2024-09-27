@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Participantes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Participa en el Sorteo</h1>
+        <form id="participantForm">
+            <label for="phone">Número de Teléfono:</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="dni_last_digits">Últimos 3 dígitos del DNI:</label>
+            <input type="text" id="dni_last_digits" name="dni_last_digits" maxlength="3" required>
+
+            <button type="submit">Registrarse</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('participantForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const dni_last_digits = document.getElementById('dni_last_digits').value;
+
+            // Validar que no haya duplicados
+            const registeredDni = localStorage.getItem(dni_last_digits);
+            if (registeredDni) {
+                document.getElementById('message').textContent = "Los últimos 3 dígitos del DNI ya están registrados.";
+            } else {
+                localStorage.setItem(dni_last_digits, phone);
+                document.getElementById('message').textContent = "¡Registro exitoso!";
+            }
+        });
+    </script>
+</body>
+</html>
+2. login.html - Página de inicio de sesión para administradores
+html
+Copiar código
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Administrador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Iniciar Sesión</h1>
+        <form id="loginForm">
+            <label for="username">Usuario:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        <div id="loginMessage"></div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Validación de usuario (solo un ejemplo básico)
+            if (username === "admin" && password === "1234") {
+                window.location.href = "admin.html";
+            } else {
+                document.getElementById('loginMessage').textContent = "Usuario o contraseña incorrectos.";
+            }
+        });
+    </script>
+</body>
+</html>
+3. admin.html - Panel de administración para ver participantes y realizar el sorteo
+html
+Copiar código
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Panel de Administración</h1>
+
+        <h2>Participantes Registrados</h2>
+        <ul id="participantList"></ul>
+
+        <button id="selectWinner">Seleccionar Ganador</button>
+        <div id="winnerMessage"></div>
+    </div>
+
+    <script>
+        // Cargar participantes registrados desde localStorage
+        const participantList = document.getElementById('participantList');
+        for (let i = 0; i < localStorage.length; i++) {
+            const dni = localStorage.key(i);
+            const phone = localStorage.getItem(dni);
+            const listItem = document.createElement('li');
+            listItem.textContent = `Teléfono: ${phone}, DNI: ${dni}`;
+            participantList.appendChild(listItem);
+        }
+
+        // Seleccionar un ganador aleatorio
+        document.getElementById('selectWinner').addEventListener('click', function() {
+            const totalParticipants = localStorage.length;
+            if (totalParticipants === 0) {
+                document.getElementById('winnerMessage').textContent = "No hay participantes registrados.";
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * totalParticipants);
+            const winnerDni = localStorage.key(randomIndex);
+            const winnerPhone = localStorage.getItem(winnerDni);
+            document.getElementById('winnerMessage').textContent = `Ganador: Teléfono ${winnerPhone}, DNI: ${winnerDni}`;
+        });
+    </script>
+</body>
+</html>
+4. styles.css - Estilos básicos para el diseño
+css
+Copiar código
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h1, h2 {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="tel"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#message, #loginMessage, #winnerMessage {
+    margin-top: 20px;
+    color: red;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+Descripción del Proyecto
+Página de Registro (index.html): Los participantes pueden ingresar su número de teléfono y los últimos 3 dígitos de su DNI. El sistema verifica si esos dígitos ya han sido registrados utilizando localStorage.
+
+Página de Inicio de Sesión (login.html): El administrador puede iniciar sesión con un usuario y contraseña predefinidos (en este ejemplo es "admin" y "1234").
+
+Panel de Administración (admin.html): El administrador puede ver la lista de participantes y seleccionar un ganador de manera aleatoria. Los datos se almacenan en localStorage y se recuperan para el sorteo.
+
+Estilos (styles.css): Se aplican estilos simples para que el sitio sea visualmente atractivo y fácil de usar.
+
+Este enfoque utiliza solo tecnologías frontend, como HTML, CSS, y JavaScript, y almacena los datos temporalmente en el navegador usando localStorage. Si más adelante deseas integrar un backend con un servidor real (como Flask o Django), podrías adaptar este proyecto fácilmente.
+
+
+
+
+
+
+
+Tú dijiste:
+puedes decirme el enlace
+ChatGPT Plus
+ChatGPT
+Este proyecto que te proporcioné es un conjunto de archivos HTML, CSS, y JavaScript que debe ejecutarse localmente en tu máquina o en un servidor web. No hay un enlace directo, ya que este código no está alojado en ningún servidor en línea por defecto.
+
+Cómo Ejecutar el Proyecto Localmente:
+Descarga los archivos:
+
+Crea una carpeta en tu computadora (por ejemplo, llamada qr_sorteo).
+Copia y pega cada uno de los códigos en archivos con sus respectivos nombres:
+index.html
+login.html
+admin.html
+styles.css
+Abrir los archivos:
+
+Abre el archivo index.html con cualquier navegador web. Puedes hacerlo dando doble clic sobre el archivo o arrastrándolo dentro de la ventana del navegador.
+Navegación del proyecto:
+
+Puedes interactuar con la página principal (registro de participantes).
+Luego, abre login.html para acceder al panel de administración usando las credenciales predefinidas.
+Opciones para Publicarlo:
+Subir a un servidor web: Si deseas hacer el proyecto accesible en línea, puedes subir estos archivos a un servidor web o usar servicios como GitHub Pages, Netlify, o Vercel para alojarlo gratuitamente.
+
+Alojamiento Local con XAMPP o WAMP: Puedes utilizar herramientas como XAMPP o WAMP para alojar los archivos en tu propio servidor local si deseas más control.
+
+Si necesitas ayuda para poner en línea el proyecto o integrarlo con un backend, no dudes en decírmelo.
+
+
+
+
+
+
+Tú dijiste:
+puedes hacerlo al proyecto de modo local
+ChatGPT Plus
+ChatGPT
+Sí, te explicaré cómo puedes configurar el proyecto para ejecutarlo de manera local en tu máquina, tanto el frontend como un backend simple usando Python (Flask) para gestionar las funciones de registro y administración. Te guiaré paso a paso para que puedas tener una aplicación funcionando en tu computadora.
+
+Requisitos para el Proyecto Local
+Instalación de Python: Asegúrate de tener Python instalado en tu computadora. Si no lo tienes, puedes descargarlo aquí.
+
+Instalación de Dependencias: Usaremos Flask para gestionar el backend. También utilizaremos SQLite para una base de datos local.
+
+Estructura de Archivos del Proyecto:
+
+Crea una carpeta en tu computadora para el proyecto (por ejemplo, qr_sorteo).
+
+Dentro de esa carpeta, crea los siguientes archivos:
+
+php
+Copiar código
+qr_sorteo/
+├── app.py             # Archivo principal de la aplicación Flask
+├── static/            # Directorio para archivos estáticos (CSS, imágenes, etc.)
+├── templates/         # Directorio para archivos HTML
+│   ├── index.html     # Página principal de escaneo QR
+│   ├── login.html     # Página de login del administrador
+│   ├── admin.html     # Panel del administrador
+├── database.db        # Base de datos SQLite local
+└── styles.css         # Archivo de estilos CSS
+1. app.py - Código del Backend en Python (Flask)
+Crea el archivo app.py con el siguiente contenido:
+
+python
+Copiar código
+from flask import Flask, render_template, redirect, url_for, flash, request
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+import random
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret_key_here'  # Cambia 'secret_key_here' por una clave secreta segura
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+# Modelos de la base de datos
+class Participant(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    phone = db.Column(db.String(15), nullable=False)
+    dni_last_digits = db.Column(db.String(3), unique=True, nullable=False)
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# Ruta principal para registrar participantes
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        phone = request.form['phone']
+        dni_last_digits = request.form['dni_last_digits']
+        if Participant.query.filter_by(dni_last_digits=dni_last_digits).first():
+            flash("Los últimos 3 dígitos del DNI ya están registrados.")
+        else:
+            new_participant = Participant(phone=phone, dni_last_digits=dni_last_digits)
+            db.session.add(new_participant)
+            db.session.commit()
+            flash("¡Registro exitoso!")
+    return render_template('index.html')
+
+# Ruta para el panel de administrador
+@app.route("/admin", methods=["GET", "POST"])
+@login_required
+def admin():
+    participants = Participant.query.all()
+    winner = None
+    if request.method == "POST":
+        if participants:
+            winner = random.choice(participants)
+    return render_template('admin.html', participants=participants, winner=winner)
+
+# Ruta para el login del administrador
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:  # Aquí deberías usar un hash para mayor seguridad
+            login_user(user)
+            return redirect(url_for('admin'))
+        else:
+            flash("Credenciales incorrectas.")
+    return render_template('login.html')
+
+# Ruta para cerrar sesión
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+if __name__ == "__main__":
+    app.run(debug=True)
+2. Base de Datos Inicial
+Antes de ejecutar la aplicación, necesitamos crear la base de datos. Desde la terminal, ejecuta Python en modo interactivo:
+
+bash
+Copiar código
+python
+Dentro de la consola interactiva de Python, escribe los siguientes comandos para crear las tablas en la base de datos:
+
+python
+Copiar código
+from app import db
+db.create_all()
+Luego, para crear un administrador, puedes hacer esto directamente en la consola interactiva:
+
+python
+Copiar código
+from app import User, db
+admin = User(username="admin", password="1234")  # Cambia el usuario y contraseña
+db.session.add(admin)
+db.session.commit()
+3. Archivos HTML y Estilos CSS
+index.html (Registro de participantes)
+html
+Copiar código
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Participantes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Participa en el Sorteo</h1>
+        <form method="POST">
+            <label for="phone">Número de Teléfono:</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="dni_last_digits">Últimos 3 dígitos del DNI:</label>
+            <input type="text" id="dni_last_digits" name="dni_last_digits" maxlength="3" required>
+
+            <button type="submit">Registrarse</button>
+        </form>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div id="message">
+              {{ messages[0] }}
+            </div>
+          {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
+login.html (Inicio de sesión del administrador)
+html
+Copiar código
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Iniciar Sesión</h1>
+        <form method="POST">
+            <label for="username">Usuario:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div id="message">
+              {{ messages[0] }}
+            </div>
+          {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
+admin.html (Panel del administrador)
+html
+Copiar código
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Panel de Administración</h1>
+
+        <h2>Participantes Registrados</h2>
+        <ul>
+            {% for participant in participants %}
+                <li>Teléfono: {{ participant.phone }}, DNI: {{ participant.dni_last_digits }}</li>
+            {% endfor %}
+        </ul>
+
+        <form method="POST">
+            <button type="submit">Seleccionar Ganador</button>
+        </form>
+
+        {% if winner %}
+            <h3>Ganador: Teléfono {{ winner.phone }}, DNI {{ winner.dni_last_digits }}</h3>
+        {% endif %}
+    </div>
+</body>
+</html>
+styles.css (Estilos básicos)
+css
+Copiar código
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h1, h2 {
+    margin-bottom: 20px;
+}
+
+label {
+    display
+
+
+
+
+
+
+
