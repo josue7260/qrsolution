@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulario Stand 2</title>
+  <style>
+    body { background: #e8f5e9; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .form-box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+    input, button { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #c8e6c9; border-radius: 5px; font-size: 16px; }
+    button { background: #2e7d32; color: white; font-weight: bold; cursor: pointer; }
+    .error { color: red; margin-top: 10px; }
+    .success { color: green; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="form-box">
+    <h2>Participá del Sorteo - Stand 2</h2>
+    <input type="text" id="nombre" placeholder="Nombre completo" />
+    <input type="text" id="dni" placeholder="Últimos 3 del DNI" />
+    <input type="text" id="telefono" placeholder="Teléfono" />
+    <button onclick="registrar()">Enviar</button>
+    <p class="error" id="error"></p>
+    <p class="success" id="success"></p>
+  </div>
+
+  <script>
+    function registrar() {
+      const nombre = document.getElementById('nombre').value.trim();
+      const dni = document.getElementById('dni').value.trim();
+      const telefono = document.getElementById('telefono').value.trim();
+      const error = document.getElementById('error');
+      const success = document.getElementById('success');
+      error.textContent = "";
+      success.textContent = "";
+
+      if (!nombre || !dni || !telefono) {
+        error.textContent = "Completá todos los campos.";
+        return;
+      }
+
+      let key = "participantes_stand2";
+      let lista = JSON.parse(localStorage.getItem(key)) || [];
+      if (lista.some(p => p.dni === dni)) {
+        error.textContent = "Ese DNI ya está registrado.";
+        return;
+      }
+
+      lista.push({ nombre, dni, telefono });
+      localStorage.setItem(key, JSON.stringify(lista));
+      success.textContent = "¡Inscripción exitosa!";
+      document.getElementById('nombre').value = "";
+      document.getElementById('dni').value = "";
+      document.getElementById('telefono').value = "";
+    }
+  </script>
+</body>
+</html>
