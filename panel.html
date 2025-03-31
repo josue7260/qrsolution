@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Panel Sorteo Stand 1</title>
+  <title>Panel Sorteo Stand 2</title>
   <style>
     body { font-family: sans-serif; background: #e8f5e9; text-align: center; padding: 30px; }
     table { margin: auto; border-collapse: collapse; width: 90%; max-width: 800px; }
@@ -13,7 +13,7 @@
   </style>
 </head>
 <body>
-  <h1>Sorteo - Stand 1</h1>
+  <h1>Sorteo - Stand 2</h1>
   <button onclick="mostrar()">Ver Participantes</button>
   <button onclick="sortear()">Sortear Ganador</button>
   <button onclick="descargar()">Descargar CSV</button>
@@ -22,7 +22,7 @@
   <div id="ganador"></div>
 
   <script>
-    let key = "participantes_stand1";
+    let key = "participantes_stand2";
 
     function mostrar() {
       let datos = JSON.parse(localStorage.getItem(key)) || [];

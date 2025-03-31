@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulario Stand 1</title>
+  <title>Formulario Stand 2</title>
   <style>
     body { background: #e8f5e9; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
     .form-box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
@@ -15,7 +15,7 @@
 </head>
 <body>
   <div class="form-box">
-    <h2>Participá del Sorteo - Stand 1</h2>
+    <h2>Participá del Sorteo - Stand 2</h2>
     <input type="text" id="nombre" placeholder="Nombre completo" />
     <input type="text" id="dni" placeholder="Últimos 3 del DNI" />
     <input type="text" id="telefono" placeholder="Teléfono" />
@@ -39,7 +39,7 @@
         return;
       }
 
-      let key = "participantes_stand1";
+      let key = "participantes_stand2";
       let lista = JSON.parse(localStorage.getItem(key)) || [];
       if (lista.some(p => p.dni === dni)) {
         error.textContent = "Ese DNI ya está registrado.";
